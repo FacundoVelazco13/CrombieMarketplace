@@ -13,7 +13,9 @@ export const authConfig = {
       // Imagino que las de home, auth y consultas de productos seran publicas
       // Y que las de perfil, compras, comprar, paga, etc seran privadas.
       console.log("authorized callback");
+      console.log("auth: ", auth);
       const isLoggedIn = !!auth?.user;
+      console.log("isLoggedIn: ", isLoggedIn);
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       if (isOnDashboard) {
         if (isLoggedIn) return true;

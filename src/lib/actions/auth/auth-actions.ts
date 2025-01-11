@@ -50,7 +50,7 @@ export async function signUpAction(prevState: UserState, formData: FormData) {
 }
 
 //Estoy usando validacion de Zod 2 veces, debo definir bien donde la voy a utilizar.
-export async function signInAction(prevState: string | undefined, formData: FormData) {
+export async function signInActionCredentials(prevState: string | undefined, formData: FormData) {
     let state: string = "";
 
     const validatedFields = SignInUserScheme.safeParse({
@@ -85,6 +85,9 @@ export async function signInAction(prevState: string | undefined, formData: Form
     return state;
 }
 
+export async function signInActionGithub() {
+    await signIn('github');
+}
 
 export async function signOutAction() {
     console.log("ejecucion de signing out");

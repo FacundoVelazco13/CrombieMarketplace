@@ -5,10 +5,14 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/prisma/prisma"
 import bcrypt from 'bcrypt';
 import { authConfig } from '@/auth.config';
+import GitHub from "next-auth/providers/github"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     ...authConfig,
     adapter: PrismaAdapter(prisma),
+    session : {
+        strategy: "jwt",
+    },
     providers: [
         Credentials({
             //Credenciales que utilizo hasta el momento.
@@ -35,11 +39,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                 if (!user) throw new Error("Invalid credentials");
                 //bcrypt tiene una opcion de callback que podria usar en vez de los if de abajo.
+                //En este punto, si existe el mail y no la password, podriamos loguear al usuario mediante alguno de sus metodos oAuth.
+                //Debo tener en cuenta en el registro que si el usuario introduce un amil que ya existe podria enviarlo a loguearse con su provider.
+                if (!user.password) throw new Error("Invalid credentials");
                 const passwordsMatch = await bcrypt.compare(password, user.password);
                 console.log("passwordsMatch: ", passwordsMatch);
                 if (passwordsMatch) return user;
                 else throw new Error("Invalid credentials");
             },
         }),
+        GitHub
     ],
 })
