@@ -1,0 +1,45 @@
+import NextAuth from "next-auth"
+import Credentials from "next-auth/providers/credentials"
+import { SignInUserScheme } from "@/src/lib/zod/zod"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { prisma } from "@/prisma/prisma"
+import bcrypt from 'bcrypt';
+import { authConfig } from '@/auth.config';
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+    ...authConfig,
+    adapter: PrismaAdapter(prisma),
+    providers: [
+        Credentials({
+            //Credenciales que utilizo hasta el momento.
+            credentials: {
+                email: {},
+                password: {},
+            },
+            authorize: async (credentials) => {
+                let user = null;
+
+                const parsedData = SignInUserScheme.safeParse(credentials);
+
+                if (!parsedData.success) {
+                    throw new Error("Invalid credentials");
+                }
+
+                const { email, password } = parsedData.data;;
+
+                user = await prisma.user.findFirst({
+                    where: {
+                        email: email,
+                    },
+                });
+
+                if (!user) throw new Error("Invalid credentials");
+                //bcrypt tiene una opcion de callback que podria usar en vez de los if de abajo.
+                const passwordsMatch = await bcrypt.compare(password, user.password);
+                console.log("passwordsMatch: ", passwordsMatch);
+                if (passwordsMatch) return user;
+                else throw new Error("Invalid credentials");
+            },
+        }),
+    ],
+})
