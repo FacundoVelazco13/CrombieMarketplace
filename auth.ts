@@ -43,7 +43,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 //Debo tener en cuenta en el registro que si el usuario introduce un amil que ya existe podria enviarlo a loguearse con su provider.
                 if (!user.password) throw new Error("Invalid credentials");
                 const passwordsMatch = await bcrypt.compare(password, user.password);
-                console.log("passwordsMatch: ", passwordsMatch);
                 if (passwordsMatch) return user;
                 else throw new Error("Invalid credentials");
             },

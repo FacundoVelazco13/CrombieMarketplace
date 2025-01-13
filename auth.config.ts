@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
+import { generateProfileFromUser } from './src/lib/actions/profile/profile-actions';
 
 export const authConfig = {
   pages: {
@@ -32,7 +33,7 @@ export const authConfig = {
       } */
       return true;
     },
-    jwt({ token, user }) {
+    jwt({ token, user, trigger ,profile}) {
       if (user) token.role = user.role
       return token
     },
