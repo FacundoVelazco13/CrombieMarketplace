@@ -1,6 +1,6 @@
 import { signOutAction } from "@/src/lib/actions/auth/auth-actions"
  
-export function SignOut() {
+export function SignOutForm() {
   return (
     <form
       action={signOutAction}

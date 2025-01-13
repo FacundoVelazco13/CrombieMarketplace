@@ -45,6 +45,7 @@ export async function signUpAction(prevState: UserState, formData: FormData) {
             password: hashedPassword,
         },
     });
+    //podria hacer sign in automatico en este punto, lo dejo para despues.
     revalidatePath('/auth/signin');
     redirect('/auth/signin');
 }
@@ -69,7 +70,6 @@ export async function signInActionCredentials(prevState: string | undefined, for
         //En este punto podria redirigir al usuario a donde quiero.
         await signIn('credentials', { email: email, password: password });
     } catch (error) {
-        console.log("error instanceof AuthError: ", error instanceof AuthError);
         if (error instanceof AuthError) {
             switch (error.type) {
                 case 'CallbackRouteError':
